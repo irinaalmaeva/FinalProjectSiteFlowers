@@ -1,0 +1,35 @@
+/* styles.css */
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    background-color: #e9f5e9;
+}
+
+.navbar-brand {
+    color: #d63384;
+}
+
+.nav-link {
+    color: #d63384;
+}
+
+.nav-link:hover {
+    color: #a32561;
+}
+
+.btn-primary {
+    background-color: #d63384;
+    border-color: #d63384;
+}
+
+.btn-success {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+
+footer {
+    background-color: #e9f5e9;
+    color: #d63384;
+}

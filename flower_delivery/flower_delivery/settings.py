@@ -11,10 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
-
+from config import SECRET_KEY, TELEGRAM_BOT_TOKEN
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Путь к корневой директории проекта
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -22,15 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g1ou@*jtqdtb3+_wnvoa$*g+!cv)*_%+a@%+6*qhtcsf*9@w6p'
-
 # SECURITY WARNING: don't run with debug turned on in production!
+# Ключ безопасности
+SECRET_KEY = SECRET_KEY
+
+# Режим отладки
 DEBUG = True
 
+# Разрешенные хосты
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# Подключение приложений
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -42,8 +46,9 @@ INSTALLED_APPS = [
     'flowers',  # Приложение для товаров
     'orders',   # Приложение для заказов
     'bot',      # Приложение для Telegram бота
+    'users',    # Приложение для авторизации/регистрации пользователей
 ]
-
+# Настройки посредников (middleware)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,8 +59,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Настройки URL проекта
 ROOT_URLCONF = 'flower_delivery.urls'
 
+# Пути к шаблонам
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -72,9 +79,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI приложение
 WSGI_APPLICATION = 'flower_delivery.wsgi.application'
 
-
+# Настройки базы данных
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -85,7 +93,7 @@ DATABASES = {
     }
 }
 
-
+# Настройки аутентификации
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -107,28 +115,35 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
+# Локализация
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+# Временная зона
+TIME_ZONE = 'Europe/Moscow'
 
+# Поддержка международных форматов времени
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# Настройки статических файлов (CSS, JavaScript, изображения)
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Папка для загружаемых файлов
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Настройка бота (Telegram API)
+TELEGRAM_BOT_TOKEN = TELEGRAM_BOT_TOKEN
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+# Настройки для загрузки файлов и статиков
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TELEGRAM_BOT_TOKEN = os.getenv("7424549025:AAHAgHHj4R2arJxk5mZYAlnM5MVA9xsfKkg")
 
-# Crispy forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"

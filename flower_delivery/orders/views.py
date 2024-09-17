@@ -4,6 +4,8 @@ from flowers.models import Flower
 from .models import Order
 from .forms import OrderForm
 
+def order_success(request):
+    return render(request, 'order_success.html')
 
 def order_history(request):
     orders = Order.objects.filter(user=request.user)
@@ -32,3 +34,4 @@ def place_order(request, flower_id):
         form = OrderForm()
 
     return render(request, 'checkout.html', {'form': form, 'flower': flower})
+

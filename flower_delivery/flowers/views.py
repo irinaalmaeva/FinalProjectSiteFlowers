@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Flower
-from .forms import FlowerForm
 from orders.forms import OrderForm
 
 def flower_catalog(request):
@@ -13,13 +12,17 @@ def flower_detail(request, pk):
 
 def checkout(request):
     if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-            order.save()
-            return redirect('order_history')
+        if request.user.is_authenticated:
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                order = form.save(commit=False)
+                order.user = request.user
+                order.save()
+                return redirect('order_history')
+        else:
+            # Обработка случая, когда пользователь не аутентифицирован
+            return redirect('login')  # Или другая логика
     else:
-        form = OrderForm(user=request.user)
+        form = OrderForm()
     return render(request, 'checkout.html', {'form': form})
 

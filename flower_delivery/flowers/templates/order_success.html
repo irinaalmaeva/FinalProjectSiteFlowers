@@ -1,0 +1,11 @@
+<!-- order_success.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Спасибо за заказ!</h2>
+    <p>Ваш заказ был успешно оформлен. Мы свяжемся с вами в ближайшее время.</p>
+    <a href="{% url 'flower_catalog' %}" class="btn btn-primary">Вернуться в каталог</a>
+</div>
+{% endblock %}

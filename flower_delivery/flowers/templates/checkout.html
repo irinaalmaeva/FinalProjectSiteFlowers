@@ -1,13 +1,23 @@
+<!-- checkout.html -->
 {% extends 'base.html' %}
 
-{% block title %}Оформление заказа{% endblock %}
-
 {% block content %}
-<h1>Оформление заказа</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
-</form>
+<div class="container mt-4">
+    <h2>Оформление заказа</h2>
+    <div class="card mb-4">
+        <img src="{{ flower.image.url }}" class="card-img-top" alt="{{ flower.name }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ flower.name }}</h5>
+            <p class="card-text">{{ flower.description }}</p>
+            <p class="card-text"><strong>{{ flower.price }} руб.</strong></p>
+        </div>
+    </div>
+    <!-- Форма для ввода данных заказа -->
+    <form action="{% url 'place_order' flower.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Оформить заказ</button>
+    </form>
+</div>
 {% endblock %}
 

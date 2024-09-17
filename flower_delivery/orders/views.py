@@ -8,8 +8,12 @@ def order_success(request):
     return render(request, 'order_success.html')
 
 def order_history(request):
-    orders = Order.objects.filter(user=request.user)
-    return render(request, 'order_history.html', {'orders': orders})
+    if request.user.is_authenticated:  # Проверяем, аутентифицирован ли пользователь
+        orders = Order.objects.filter(user=request.user)
+        return render(request, 'order_history.html', {'orders': orders})
+    else:
+        messages.error(request, 'Вы должны быть аутентифицированы для просмотра истории заказов.')
+        return redirect('login')  # Перенаправляем на страницу входа
 
 def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk)

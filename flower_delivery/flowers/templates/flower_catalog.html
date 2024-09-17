@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-footer text-center">
                         <!-- Кнопка для выбора букета -->
-                        <form action="{% url 'checkout' flower.id %}" method="post">
+                        <form action="{% url 'place_order' flower.id %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-success">Выбрать букет</button>
                         </form>

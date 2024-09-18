@@ -19,7 +19,6 @@ def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk)
     return render(request, 'order_detail.html', {'order': order})
 
-
 def place_order(request, flower_id):
     flower = get_object_or_404(Flower, id=flower_id)
 
@@ -38,4 +37,6 @@ def place_order(request, flower_id):
         form = OrderForm()
 
     return render(request, 'checkout.html', {'form': form, 'flower': flower})
+
+
 

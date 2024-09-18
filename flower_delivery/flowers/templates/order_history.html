@@ -8,7 +8,7 @@
     <thead>
         <tr>
             <th>Номер заказа</th>
-            <th>Дата</th>
+            <th>Дата заказа</th>
             <th>Статус</th>
             <th>Цветы</th>
         </tr>
@@ -17,9 +17,16 @@
         {% for order in orders %}
         <tr>
             <td>{{ order.id }}</td>
-            <td>{{ order.date }}</td>
+            <td>{{ order.order_date|date:"d.m.Y H:i" }}</td>  <!-- Дата заказа -->
             <td>{{ order.status }}</td>
-            <td>{{ order.flowers }}</td>
+            <td>
+                <ul>
+                    {% for flower in order.flowers.all %}
+                    <li>{{ flower.name }}</li> <!-- Отображаем название цветка -->
+                    {% endfor %}
+                </ul>
+            </td>
+
         </tr>
         {% empty %}
         <tr>

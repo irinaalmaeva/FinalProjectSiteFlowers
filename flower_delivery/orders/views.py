@@ -26,10 +26,11 @@ def place_order(request, flower_id):
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
-            order.flower = flower  # Привязываем цветок к заказу
             order.user = request.user  # Привязываем текущего пользователя (если реализована система пользователей)
             order.save()
-            messages.success(request, 'Ваш заказ успешно оформлен!')
+            order.flowers.add(flower)  # Привязываем выбранный цветок к заказу
+
+
             return redirect('order_success')
         else:
             messages.error(request, 'Ошибка при оформлении заказа. Пожалуйста, проверьте введенные данные.')

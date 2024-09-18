@@ -20,6 +20,6 @@ class FlowerForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['address']  # Или другие поля формы
+        fields = ['address', 'flowers']  # Или другие поля формы
 
 

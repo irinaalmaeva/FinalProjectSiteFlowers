@@ -54,12 +54,9 @@ def add_to_cart(request, flower_id):
     return redirect('view_cart')
 @login_required
 def view_cart(request):
-    if request.user.is_authenticated:
-        cart = Cart.objects.get(user=request.user)
-    else:
-        cart = Cart.objects.filter(user=None).first()
+    cart = Cart.objects.get(user=request.user)  # Предполагается, что у вас есть логика для получения корзины пользователя
+    cart_items = CartItem.objects.filter(cart=cart)
 
-    cart_items = CartItem.objects.filter(cart=cart) if cart else []
     # Расчитываем общую стоимость
     total_price = sum(item.total_price for item in cart_items)
 

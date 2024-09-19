@@ -20,13 +20,15 @@ def place_order(request):
             order.user = request.user  # Привязываем заказ к пользователю
             order.save()
 
-            # Добавляем все товары из корзины в заказ
-            cart_items = request.POST.get('cart_items', '')
-            item_ids = cart_items.split(',')
-            for item_id in item_ids:
-                cart_item = get_object_or_404(CartItem, id=item_id)
-                order.flowers.add(cart_item.flower)  # Привязываем выбранный цветок к заказу
-                cart_item.delete()  # Удаляем товар из корзины
+            # Получаем все товары из корзины
+            cart_items = request.POST.getlist('cart_items')  # Изменено на getlist для получения списка
+
+            # Проверяем, есть ли товары в корзине
+            if cart_items:
+                for item_id in cart_items:
+                    cart_item = get_object_or_404(CartItem, id=item_id)
+                    order.flowers.add(cart_item.flower)  # Привязываем выбранный цветок к заказу
+                    cart_item.delete()  # Удаляем товар из корзины
 
             return redirect('order_history')
     else:

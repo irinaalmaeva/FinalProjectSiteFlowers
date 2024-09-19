@@ -11,22 +11,27 @@ def flower_detail(request, pk):
     flower = get_object_or_404(Flower, pk=pk)
     return render(request, 'flower_detail.html', {'flower': flower})
 
-def place_order(request,flower_id):
-    flower = get_object_or_404(Flower, id=flower_id) # Получаем выбранный цветок
+@login_required
+def place_order(request):
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            form = OrderForm(request.POST)
-            if form.is_valid():
-                order = form.save(commit=False)
-                order.user = request.user # Привязываем заказ к пользователю
-                order.save()
-                order.flowers.add(flower)  # Привязываем выбранный цветок к заказу
-                return redirect('order_history')
-        else:
-            # Обработка случая, когда пользователь не аутентифицирован
-            return redirect('login')  # Или другая логика
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user  # Привязываем заказ к пользователю
+            order.save()
+
+            # Добавляем все товары из корзины в заказ
+            cart_items = request.POST.get('cart_items', '')
+            item_ids = cart_items.split(',')
+            for item_id in item_ids:
+                cart_item = get_object_or_404(CartItem, id=item_id)
+                order.flowers.add(cart_item.flower)  # Привязываем выбранный цветок к заказу
+                cart_item.delete()  # Удаляем товар из корзины
+
+            return redirect('order_history')
     else:
         form = OrderForm()
+
     return render(request, 'checkout.html', {'form': form})
 
 # --- Новые функции для корзины ---
@@ -61,4 +66,4 @@ def view_cart(request):
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
     cart_item.delete()
-    return redirect('view_cart')
+    return redirect('view_cart') # Вернуться в корзину после удаления

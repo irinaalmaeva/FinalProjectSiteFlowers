@@ -34,9 +34,14 @@
         </tbody>
     </table>
 
-    <h3>Общая стоимость: {{ total_price }}</h3>
+    <h3>Общая стоимость корзины: {{ total_price }} руб.</h3>
 
-    <a href="{% url 'checkout' %}" class="btn btn-success">Оформить заказ</a>
+    <!-- Форма для оформления заказа -->
+    <form action="{% url 'place_order' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="cart_items" value="{% for item in cart_items %}{{ item.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+        <button type="submit" class="btn btn-success">Оформить заказ</button>
+    </form>
 
 {% else %}
     <p>Ваша корзина пуста.</p>

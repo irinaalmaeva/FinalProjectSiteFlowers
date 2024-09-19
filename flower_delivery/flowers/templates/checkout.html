@@ -1,4 +1,3 @@
-<!-- checkout.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -13,11 +12,16 @@
         </div>
     </div>
     <!-- Форма для ввода данных заказа -->
-    <form action="{% url 'place_order' flower.id %}" method="post">
+    <form action="{% url 'place_order' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <!-- Скрытое поле для cart_items -->
+        <input type="hidden" name="cart_items" value="{{ cart_item_ids|join:',' }}">
+
         <button type="submit" class="btn btn-success">Оформить заказ</button>
     </form>
 </div>
 {% endblock %}
+
 

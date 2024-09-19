@@ -60,8 +60,13 @@ def view_cart(request):
         cart = Cart.objects.filter(user=None).first()
 
     cart_items = CartItem.objects.filter(cart=cart) if cart else []
+    # Расчитываем общую стоимость
+    total_price = sum(item.total_price for item in cart_items)
 
-    return render(request, 'cart.html', {'cart_items': cart_items})
+    return render(request, 'cart.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    })
 
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)

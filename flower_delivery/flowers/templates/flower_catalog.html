@@ -13,10 +13,10 @@
                         <p class="card-text"><strong>{{ flower.price }} руб.</strong></p>
                     </div>
                     <div class="card-footer text-center">
-                        <!-- Кнопка для выбора букета -->
-                        <form action="{% url 'place_order' flower.id %}" method="post">
+                        <!-- Кнопка для добавления в корзину -->
+                        <form action="{% url 'add_to_cart' flower.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Выбрать букет</button>
+                            <button type="submit" class="btn btn-primary">Добавить в корзину</button>
                         </form>
                     </div>
                 </div>
@@ -25,5 +25,4 @@
     </div>
 </div>
 {% endblock %}
-
 

@@ -20,8 +20,8 @@ def place_order(request):
             order.user = request.user  # Привязываем заказ к пользователю
             order.save()
 
-            # Получаем все товары из корзины
-            cart_items = request.POST.getlist('cart_items')  # Изменено на getlist для получения списка
+            # Получаем все товары из корзины и убираем пустые значения
+            cart_items = [item_id for item_id in request.POST.getlist('cart_items') if item_id]
 
             # Проверяем, есть ли товары в корзине
             if cart_items:

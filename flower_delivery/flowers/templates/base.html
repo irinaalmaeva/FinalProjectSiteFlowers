@@ -15,6 +15,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'flower_catalog' %}">Каталог</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'order_history' %}">История заказов</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}">Корзина</a></li>  <!-- Добавленная ссылка на корзину -->
                 {% if user.is_authenticated %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Выйти</a></li>
                 {% else %}

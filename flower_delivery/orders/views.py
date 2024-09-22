@@ -9,7 +9,8 @@ def order_success(request):
 
 def order_history(request):
     if request.user.is_authenticated:  # Проверяем, аутентифицирован ли пользователь
-        orders = Order.objects.filter(user=request.user)
+        # Используем prefetch_related для загрузки связанных цветов
+        orders = Order.objects.filter(user=request.user).prefetch_related('flowers')
         return render(request, 'order_history.html', {'orders': orders})
     else:
         messages.error(request, 'Вы должны быть аутентифицированы для просмотра истории заказов.')

@@ -56,17 +56,16 @@ def add_to_cart(request, flower_id):
     return redirect('view_cart')
 @login_required
 def view_cart(request):
-    cart_items = CartItem.objects.filter(user=request.user)
-    cart_item_ids = [str(item.id) for item in cart_items]  # Список идентификаторов товаров в корзине
+    cart = Cart.objects.get(user=request.user)  # Предполагается, что у вас есть логика для получения корзины пользователя
+    cart_items = CartItem.objects.filter(cart=cart)
 
+    # Расчитываем общую стоимость
     total_price = sum(item.total_price for item in cart_items)
 
     return render(request, 'cart.html', {
         'cart_items': cart_items,
-        'cart_item_ids': cart_item_ids,  # Передаем идентификаторы в шаблон
-        'total_price': total_price
+        'total_price': total_price,
     })
-
 
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)

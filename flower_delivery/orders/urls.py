@@ -7,6 +7,8 @@ urlpatterns = [
     path('order_history/', views.order_history, name='order_history'),
     path('order/success/', views.order_success, name='order_success'),
     path('order_detail/<int:pk>/', views.order_detail, name='order_detail'), # Для отображения подробной информации о заказе
-    path('login/', auth_views.LoginView.as_view(), name='login'),  # Используем стандартное представление для входа,
+    #path('login/', auth_views.LoginView.as_view(), name='login'),  # Используем стандартное представление для входа,
     path('api/create_order/', views.create_order, name='create_order'),  # а также для создания заказа
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+
 ]

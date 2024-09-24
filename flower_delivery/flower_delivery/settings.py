@@ -62,11 +62,14 @@ MIDDLEWARE = [
 # Настройки URL проекта
 ROOT_URLCONF = 'flower_delivery.urls'
 
+
+
+
 # Пути к шаблонам
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,5 +148,8 @@ TELEGRAM_BOT_TOKEN = TELEGRAM_BOT_TOKEN
 # Настройки для загрузки файлов и статиков
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#Перенаправление после входа
+LOGIN_REDIRECT_URL = '/'
 
 

@@ -8,6 +8,7 @@ import asyncio
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import logging
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import aiohttp
 
 from config import TELEGRAM_BOT_TOKEN
 

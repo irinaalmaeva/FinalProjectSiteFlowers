@@ -13,4 +13,5 @@ urlpatterns = [
     path('cart/', views.view_cart, name='view_cart'),
     # маршрут для удаления товара из корзины
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('api/flowers/', views.flower_catalog_api, name='flower_catalog_api'),
 ]

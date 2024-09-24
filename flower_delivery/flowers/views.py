@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Flower, Cart, CartItem  # Импорт модели Flower
 from .forms import OrderForm  # Импорт формы OrderForm
 from django.contrib.auth.decorators import login_required  # Декоратор для проверки аутентификации
+from django.http import JsonResponse
 
 def flower_catalog(request):
     flowers = Flower.objects.all()
@@ -71,3 +72,16 @@ def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
     cart_item.delete()
     return redirect('view_cart') # Вернуться в корзину после удаления
+
+def flower_catalog_api(request):
+    flowers = Flower.objects.all()  # Получаем все цветы из базы данных
+    flowers_list = [
+        {
+            'id': flower.id,
+            'name': flower.name,
+            'price': flower.price,
+            'description': flower.description,
+        }
+        for flower in flowers
+    ]
+    return JsonResponse(flowers_list, safe=False)

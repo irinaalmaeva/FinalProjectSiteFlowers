@@ -103,16 +103,47 @@ async def send_order_to_site(user_id, flowers_ids, address):
         async with session.post(url, json=data) as response:
             return await response.json()
 
-# Функция для обработки цветка
+# Обработка кнопки "Заказать"
+
+@dp.message(F.text == "Заказать")
+async def start_order(message: types.Message):
+    await message.answer("Выберите цветок из каталога, чтобы оформить заказ.")
+    await show_flowers_catalog(message)
+
+# Функция отображения каталога цветов с кнопками для выбора
+
+async def show_flowers_catalog(message: types.Message):
+    flowers_catalog = await get_flowers_catalog()
+
+    if flowers_catalog:
+        catalog_message = "Наш каталог цветов:\n\n"
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[])  # Создаем пустую клавиатуру
+
+        for flower in flowers_catalog:
+            catalog_message += (
+                f"Название: {flower['name']}\n"
+                f"Цена: {flower['price']} руб.\n"
+                f"Описание: {flower['description']}\n\n"
+            )
+            # Создаем кнопку для выбора цветка
+            button = InlineKeyboardButton(text=flower['name'], callback_data=f"flower_{flower['id']}")
+            keyboard.inline_keyboard.append([button])  # Добавляем кнопку в клавиатуру
+
+        # Отправляем сообщение с каталогом и кнопками
+        await message.answer(catalog_message, reply_markup=keyboard)
+    else:
+        await message.answer("Не удалось загрузить каталог цветов.")
+
+
+# Обработка выбора цветка
 @dp.callback_query(F.data.startswith("flower_"))
 async def handle_flower_selection(callback_query: types.CallbackQuery, state: FSMContext):
-    selected_flower_name = callback_query.data.split("_")[1]
+    selected_flower_id = callback_query.data.split("_")[1]  # Извлекаем ID цветка
     flowers_catalog = await get_flowers_catalog()
-    selected_flower = next((flower for flower in flowers_catalog if flower["name"] == selected_flower_name), None)
+    selected_flower = next((flower for flower in flowers_catalog if str(flower["id"]) == selected_flower_id), None)
 
     if selected_flower:
-        selected_flower_id = selected_flower["id"]  # Используем реальный ID цветка
-        await state.update_data(flowers_ids=[selected_flower_id])
+        await state.update_data(flowers_ids=[selected_flower["id"]])  # Используем ID цветка
 
         # Запрашиваем адрес у пользователя
         await callback_query.message.answer("Пожалуйста, введите ваш адрес доставки:")

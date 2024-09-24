@@ -3,6 +3,10 @@ from django.contrib import messages
 from flowers.models import Flower
 from .models import Order
 from .forms import OrderForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+import json
 
 def order_success(request):
     return render(request, 'order_success.html')
@@ -39,6 +43,26 @@ def place_order(request, flower_id):
         form = OrderForm()
 
     return render(request, 'checkout.html', {'form': form, 'flower': flower})
+
+@csrf_exempt
+def create_order(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        flowers_ids = data.get('flowers_ids', [])
+        address = data.get('address')
+
+        try:
+            user = User.objects.get(id=user_id)
+            order = Order.objects.create(user=user, address=address)
+            for flower_id in flowers_ids:
+                flower = Flower.objects.get(id=flower_id)
+                order.flowers.add(flower)
+            order.save()
+            return JsonResponse({'status': 'success', 'order_id': order.id})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 
 

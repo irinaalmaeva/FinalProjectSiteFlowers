@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('flowers.urls')),  # Основной маршрут для каталога цветов
     path('orders/', include('orders.urls')),
     path('users/', include('users.urls')),
+    path('orders/', include('orders.urls')),
 ]
 
 if settings.DEBUG:

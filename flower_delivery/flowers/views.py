@@ -3,6 +3,7 @@ from .models import Flower, Cart, CartItem  # Импорт модели Flower
 from .forms import OrderForm  # Импорт формы OrderForm
 from django.contrib.auth.decorators import login_required  # Декоратор для проверки аутентификации
 from django.http import JsonResponse
+from decimal import Decimal
 
 def flower_catalog(request):
     flowers = Flower.objects.all()
@@ -61,9 +62,11 @@ def add_to_cart(request, flower_id):
 def view_cart(request):
     cart = Cart.objects.get(user=request.user)  # Предполагается, что у вас есть логика для получения корзины пользователя
     cart_items = CartItem.objects.filter(cart=cart)
+    if not cart_items:
+        total_price = Decimal('0.00')
+    else:
+        total_price = sum(item.total_price for item in cart_items if item.total_price is not None)
 
-    # Расчитываем общую стоимость
-    total_price = sum(item.total_price for item in cart_items)
 
     return render(request, 'cart.html', {
         'cart_items': cart_items,

@@ -22,9 +22,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('flowers.urls')),  # Основной маршрут для каталога цветов
-    path('orders/', include('orders.urls')),
-    path('users/', include('users.urls')),
-    path('orders/', include('orders.urls')),
+    path('orders/', include('orders.urls')),  # Маршрут для оформления заказа
+    path('users/', include('users.urls')),  # Маршрут для регистрации и входа
+
 ]
 
 if settings.DEBUG:

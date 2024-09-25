@@ -8,6 +8,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import logging
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import aiohttp
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from config import TELEGRAM_BOT_TOKEN
 
@@ -99,6 +102,8 @@ async def send_order_to_site(user_id, flowers_ids, address):
         'flowers_ids': flowers_ids,
         'address': address
     }
+    logger.info(f"Отправка данных на сайт: {data}")  # Логируем данные
+
     async with aiohttp.ClientSession() as session:
         async with session.post(url, json=data) as response:
             return await response.json()

@@ -8,6 +8,6 @@ urlpatterns = [
     path('order/success/', views.order_success, name='order_success'),
     path('order_detail/<int:pk>/', views.order_detail, name='order_detail'), # Для отображения подробной информации о заказе
     path('api/create_order/', views.create_order, name='create_order'),  # а также для создания заказа
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
 
 ]

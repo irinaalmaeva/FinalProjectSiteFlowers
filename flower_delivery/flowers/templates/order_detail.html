@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+ {% extends 'base.html' %}
 
 {% block title %}Детали заказа{% endblock %}
 
@@ -10,11 +10,18 @@
 <p><strong>Адрес доставки:</strong> {{ order.address }}</p>
 
 <h3>Цветы в заказе:</h3>
+
 <ul>
-    {% for flower in order.flowers.all %}
-        <li>{{ flower.name }} - {{ flower.price }} руб.</li>
-    {% endfor %}
+    {% if order.flowers.exists %}  <!-- Проверяем, есть ли цветы в заказе -->
+        {% for flower in order.flowers.all %}
+            <li>{{ flower.name }} - {{ flower.price }} руб.</li>
+        {% endfor %}
+    {% else %}
+        <li>Цветы не указаны</li>
+    {% endif %}
 </ul>
+
+
 
 <a href="{% url 'order_history' %}">Вернуться к истории заказов</a>
 {% endblock %}

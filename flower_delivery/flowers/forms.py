@@ -18,8 +18,13 @@ class FlowerForm(forms.ModelForm):
         }
 
 class OrderForm(forms.ModelForm):
+    flowers = forms.ModelMultipleChoiceField(
+        queryset=Flower.objects.all(),
+        widget=forms.CheckboxSelectMultiple,  # Или другой виджет для выбора цветов
+        label="Выберите цветы"
+    )
     class Meta:
         model = Order
-        fields = ['address', 'flowers']  # Или другие поля формы
+        fields = ['flowers','address']  # Или другие поля формы
 
 

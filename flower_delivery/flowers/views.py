@@ -20,6 +20,8 @@ def place_order(request):
             order = form.save(commit=False)
             order.user = request.user  # Привязываем заказ к пользователю
             order.save()
+            form.save_m2m()  # Сохраняем связь с цветами (ManyToManyField)
+            return redirect('order_success')
 
             # Получаем все товары из корзины и убираем пустые значения
             cart_items = [item_id for item_id in request.POST.getlist('cart_items') if item_id]

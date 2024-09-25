@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path('', views.flower_catalog, name='flower_catalog'),
     path('place_order/', views.place_order, name='place_order'),
@@ -14,4 +15,5 @@ urlpatterns = [
     # маршрут для удаления товара из корзины
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('api/flowers/', views.flower_catalog_api, name='flower_catalog_api'),
+
 ]

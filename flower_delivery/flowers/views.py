@@ -85,3 +85,4 @@ def flower_catalog_api(request):
         for flower in flowers
     ]
     return JsonResponse(flowers_list, safe=False)
+

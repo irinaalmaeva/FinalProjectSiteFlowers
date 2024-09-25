@@ -5,7 +5,6 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 import asyncio
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-import logging
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import aiohttp
 import logging

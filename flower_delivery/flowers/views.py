@@ -15,6 +15,9 @@ def flower_detail(request, pk):
 
 @login_required
 def place_order(request):
+    cart = Cart.objects.get(user=request.user)  # Получаем корзину пользователя
+    cart_items = CartItem.objects.filter(cart=cart)  # Все товары из корзины
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -22,34 +25,33 @@ def place_order(request):
             order.user = request.user  # Привязываем заказ к пользователю
             order.save()
             form.save_m2m()  # Сохраняем связь с цветами (ManyToManyField)
+
+            # Привязываем товары из корзины к заказу
+            for cart_item in cart_items:
+                order.flowers.add(cart_item.flower)  # Привязываем цветы к заказу
+                cart_item.delete()  # Удаляем товары из корзины после оформления заказа
+
             return redirect('order_success')
 
-            # Получаем все товары из корзины и убираем пустые значения
-            cart_items = [item_id for item_id in request.POST.getlist('cart_items') if item_id]
-
-            # Проверяем, есть ли товары в корзине
-            if cart_items:
-                for item_id in cart_items:
-                    cart_item = get_object_or_404(CartItem, id=item_id)
-                    order.flowers.add(cart_item.flower)  # Привязываем выбранный цветок к заказу
-                    cart_item.delete()  # Удаляем товар из корзины
-
-            return redirect('order_history')
     else:
         form = OrderForm()
 
-    return render(request, 'checkout.html', {'form': form})
+
+    # Рассчитываем общую сумму товаров в корзине
+    total_price = sum(item.total_price for item in cart_items)
+
+    return render(request, 'checkout.html', {
+           'form': form,
+           'cart_items': cart_items,  # Передаем только товары из корзины
+           'total_price': total_price,  # Общая стоимость
+      })
 
 # --- Новые функции для корзины ---
 @login_required
 def add_to_cart(request, flower_id):
     flower = get_object_or_404(Flower, id=flower_id)
 
-    if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user)
-    else:
-
-        cart = Cart.objects.filter(user=None).first() or Cart.objects.create()
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
     cart_item, created = CartItem.objects.get_or_create(cart=cart, flower=flower)
 
@@ -60,8 +62,9 @@ def add_to_cart(request, flower_id):
     return redirect('view_cart')
 @login_required
 def view_cart(request):
-    cart = Cart.objects.get(user=request.user)  # Предполагается, что у вас есть логика для получения корзины пользователя
-    cart_items = CartItem.objects.filter(cart=cart)
+    cart = Cart.objects.get(user=request.user)  # Получаем корзину  пользователя
+    cart_items = CartItem.objects.filter(cart=cart) # Все товары из корзины
+
     if not cart_items:
         total_price = Decimal('0.00')
     else:

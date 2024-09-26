@@ -18,13 +18,17 @@ class FlowerForm(forms.ModelForm):
         }
 
 class OrderForm(forms.ModelForm):
-    flowers = forms.ModelMultipleChoiceField(
-        queryset=Flower.objects.all(),
-        widget=forms.CheckboxSelectMultiple,  # Или другой виджет для выбора цветов
-        label="Выберите цветы"
+    # Убираем поле flowers
+
+    address = forms.CharField(
+        max_length=255,  # Установите максимальную длину адреса
+        label="Введите адрес доставки",  # Метка для поля
+        widget=forms.TextInput(attrs={'placeholder': 'Ваш адрес'})  # Место для ввода адреса
     )
+
     class Meta:
         model = Order
-        fields = ['flowers','address']  # Или другие поля формы
+        fields = ['address']  # Оставляем только поле address
+
 
 

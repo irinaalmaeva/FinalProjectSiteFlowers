@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 class Flower(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')

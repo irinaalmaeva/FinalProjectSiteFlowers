@@ -3,21 +3,40 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Оформление заказа</h2>
-    <div class="card mb-4">
-        <img src="{{ flower.image.url }}" class="card-img-top" alt="{{ flower.name }}">
-        <div class="card-body">
-            <h5 class="card-title">{{ flower.name }}</h5>
-            <p class="card-text">{{ flower.description }}</p>
-            <p class="card-text"><strong>{{ flower.price }} руб.</strong></p>
+
+    <!-- Отображение товаров из корзины -->
+     {% if cart_items %}
+        <div class="cart-items">
+            {% for item in cart_items %}
+                <div class="card mb-4" style="max-width: 24rem;"> <!-- Увеличение размера карточки -->
+                    <img src="{{ item.flower.image.url }}" class="card-img-top" alt="{{ item.flower.name }}" style="height: 250px; width: 100%; object-fit: contain;"> <!-- Корректировка размера изображения -->
+                    <div class="card-body" style="font-size: 0.9rem;"> <!-- Уменьшение шрифта текста в карточке -->
+                        <h5 class="card-title">{{ item.flower.name }}</h5>
+                        <p class="card-text">{{ item.flower.description }}</p>
+                        <p class="card-text"><strong>{{ item.flower.price }} руб.</strong></p>
+                        <p class="card-text">Количество: {{ item.quantity }}</p>
+                        <p class="card-text"><strong>Цена за этот товар: {{ item.total_price }} руб.</strong></p>
+
+                    <!-- Скрытое поле для передачи ID цветка и количества -->
+                        <input type="hidden" name="flower_ids" value="{{ item.flower.id }}">
+                        <input type="hidden" name="quantities" value="{{ item.quantity }}"></div>
+                </div>
+            {% endfor %}
         </div>
-    </div>
+
+    <!-- Общая сумма товаров в корзине -->
+        <h4>Общая стоимость: <strong>{{ total_price }} руб.</strong></h4>
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+
     <!-- Форма для ввода данных заказа -->
     <form action="{% url 'place_order' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
 
-        <!-- Скрытое поле для cart_items -->
-        <input type="hidden" name="cart_items" value="{{ cart_item_ids|join:',' }}">
+        <!-- Скрытое поле для передачи ID товаров из корзины -->
+        <input type="hidden" name="cart_items" value="{{ cart_items|join:',' }}">
 
         <button type="submit" class="btn btn-success">Оформить заказ</button>
     </form>

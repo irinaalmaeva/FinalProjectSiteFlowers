@@ -15,7 +15,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name='Статус')
     order_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата заказа')
     address = models.CharField(max_length=255, verbose_name='Адрес доставки')
-
+    is_from_telegram = models.BooleanField(default=False, verbose_name='Заказ из Telegram')  # Новое поле
 
 
     def __str__(self):

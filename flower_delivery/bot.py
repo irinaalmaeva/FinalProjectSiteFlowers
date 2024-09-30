@@ -166,6 +166,8 @@ async def process_address(message: types.Message, state: FSMContext):
     flowers_ids = user_data.get("flowers_ids", [])
     address = user_data.get("address")
 
+    logger.info(f"Собранные данные: flowers_ids={flowers_ids}, address={address}")
+
     # Подтверждаем заказ и запрашиваем подтверждение
     confirmation_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Подтвердить", callback_data="confirm_order")],
@@ -186,6 +188,8 @@ async def confirm_order(callback_query: types.CallbackQuery, state: FSMContext):
 
     flowers_ids = user_data.get("flowers_ids", [])
     address = user_data.get("address")
+
+    logger.info(f"Подтверждение заказа: flowers_ids={flowers_ids}, address={address}")
 
     # Отправляем заказ на сайт
     response_data = await send_order_to_site(user_id, flowers_ids, address)

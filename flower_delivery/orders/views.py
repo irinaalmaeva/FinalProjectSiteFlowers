@@ -60,6 +60,10 @@ def create_order(request):
             flowers_ids = data.get('flowers_ids', [])
             address = data.get('address')
 
+            # Проверяем наличие обязательных данных, вставлено 30.09
+            if not user_id or not flowers_ids or not address:
+                return JsonResponse({'status': 'error', 'message': 'Отсутствуют обязательные данные.'})
+
             # Проверяем наличие пользователя
             user = User.objects.get(id=user_id)
             logger.info(f"Найден пользователь: {user.username}")
@@ -76,9 +80,10 @@ def create_order(request):
 
         except Exception as e:
             logger.error(f"Ошибка при создании заказа: {e}")
-            return JsonResponse({'status': 'error', 'message': str(e)})
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
     # Если метод не POST, возвращаем ошибку
-    return JsonResponse({'status': 'error', 'message': 'Неподдерживаемый метод запроса'})
+    return JsonResponse({'status': 'error', 'message': 'Неподдерживаемый метод запроса'}, status=405)
+
 
 

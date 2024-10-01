@@ -9,5 +9,6 @@ urlpatterns = [
     path('order_detail/<int:pk>/', views.order_detail, name='order_detail'), # Для отображения подробной информации о заказе
     path('api/create_order/', views.create_order, name='create_order'),  # а также для создания заказа
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('update_order/<int:order_id>/<str:new_status>/', views.update_order_status, name='update_order_status'),
 
 ]

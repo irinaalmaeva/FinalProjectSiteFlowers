@@ -147,7 +147,8 @@ async def handle_flower_selection(callback_query: types.CallbackQuery, state: FS
     selected_flower = next((flower for flower in flowers_catalog if str(flower["id"]) == selected_flower_id), None)
 
     if selected_flower:
-        await state.update_data(flowers_ids=[selected_flower["id"]])  # Используем ID цветка
+        # Сохраняем как ID цветка, так и его название
+        await state.update_data(flowers_ids=[selected_flower["id"]], flower_name=selected_flower["name"])
 
         # Запрашиваем адрес у пользователя
         await callback_query.message.answer("Пожалуйста, введите ваш адрес доставки:")
@@ -164,6 +165,7 @@ async def process_address(message: types.Message, state: FSMContext):
     # Достаём данные о цветах и адресе из FSM
     user_data = await state.get_data()
     flowers_ids = user_data.get("flowers_ids", [])
+    flower_name = user_data.get("flower_name", "неизвестный цветок")  # Получаем название цветка
     address = user_data.get("address")
 
     logger.info(f"Собранные данные: flowers_ids={flowers_ids}, address={address}")
@@ -175,7 +177,7 @@ async def process_address(message: types.Message, state: FSMContext):
     ])
 
     await message.answer(
-        f"Вы выбрали цветок с ID {flowers_ids}. Адрес доставки: {address}. Подтвердите заказ:",
+        f"Вы выбрали цветок: {flower_name} (ID {flowers_ids}). Адрес доставки: {address}. Подтвердите заказ:",
         reply_markup=confirmation_keyboard
     )
     await state.set_state(OrderState.waiting_for_confirmation)

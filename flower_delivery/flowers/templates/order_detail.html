@@ -21,7 +21,12 @@
     {% endif %}
 </ul>
 
+<!-- Кнопки для изменения статуса заказа -->
+<h3>Изменить статус заказа:</h3>
+<a href="{% url 'update_order_status' order.id 'in_progress' %}" class="btn btn-warning">В процессе</a>
+<a href="{% url 'update_order_status' order.id 'delivered' %}" class="btn btn-success">Доставлен</a>
 
+<!-- Ссылка для возврата к истории заказов -->
 
 <a href="{% url 'order_history' %}">Вернуться к истории заказов</a>
 {% endblock %}

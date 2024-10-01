@@ -12,6 +12,7 @@
             <th>Статус</th>
             <th>Цветы</th>
             <th>Детали</th>
+            <th>Заказ из Telegram</th> <!-- Новый заголовок -->
         </tr>
     </thead>
     <tbody>
@@ -27,9 +28,16 @@
                     {% endfor %}
                 </ul>
             </td>
+
+
             <td>
                 <a href="{% url 'order_detail' order.pk %}">Посмотреть детали заказа</a> <!-- Здесь проверяем ссылку -->
             </td>
+
+            <td>
+                {{ order.is_from_telegram|yesno:"Да,Нет" }}
+            </td> <!-- Отображение значения -->
+
         </tr>
         {% empty %}
         <tr>

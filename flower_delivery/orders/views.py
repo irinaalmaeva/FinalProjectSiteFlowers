@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 import json
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 def order_success(request):
@@ -60,30 +61,48 @@ def create_order(request):
             flowers_ids = data.get('flowers_ids', [])
             address = data.get('address')
 
-            # Проверяем наличие обязательных данных, вставлено 30.09
+            # Проверяем наличие обязательных данных
             if not user_id or not flowers_ids or not address:
                 return JsonResponse({'status': 'error', 'message': 'Отсутствуют обязательные данные.'})
 
             # Проверяем наличие пользователя
-            user = User.objects.get(id=user_id)
-            logger.info(f"Найден пользователь: {user.username}")
+            try:
+                user = User.objects.get(id=user_id)
+                logger.info(f"Найден пользователь: {user.username}")
+            except User.DoesNotExist:
+                logger.error(f"Пользователь с ID {user_id} не найден.")
+                return JsonResponse({'status': 'error', 'message': 'Пользователь не найден.'})
 
-            # Создаем новый заказ
-            order = Order.objects.create(user=user, address=address)
-            for flower_id in flowers_ids:
-                flower = Flower.objects.get(id=flower_id)
-                order.flowers.add(flower)
-            order.save()
 
-            # Возвращаем успешный ответ
+                # Создаем новый заказ
+                order = Order.objects.create(user=user, address=address,is_from_telegram=True  # Устанавливаем, что заказ из Telegram
+            )
+                for flower_id in flowers_ids:
+                    flower = Flower.objects.get(id=flower_id)
+                    order.flowers.add(flower)
+                order.save()
+
+            logger.info(f"Заказ создан: {order.id}")
+
             return JsonResponse({'status': 'success', 'order_id': order.id})
-
+        except User.DoesNotExist:
+            logger.error("Ошибка: Пользователь не найден.")
+            return JsonResponse({'status': 'error', 'message': 'Пользователь не найден.'})
         except Exception as e:
-            logger.error(f"Ошибка при создании заказа: {e}")
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+            logger.error(f"Произошла ошибка: {str(e)}")
+            return JsonResponse(
+                {'status': 'error', 'message': 'Произошла ошибка при оформлении заказа. Попробуйте позже.'})
 
-    # Если метод не POST, возвращаем ошибку
-    return JsonResponse({'status': 'error', 'message': 'Неподдерживаемый метод запроса'}, status=405)
+def update_order_status(request, order_id, new_status):
+    # Проверка, что новый статус допустим
+    valid_statuses = dict(Order.STATUS_CHOICES).keys()
+    if new_status not in valid_statuses:
+        return ("Недопустимый статус")
+
+    order = get_object_or_404(Order, id=order_id)
+    order.status = new_status
+    order.save()
+    return redirect('order_detail', pk=order.id)  # Перенаправление на страницу деталей заказа
 
 
 

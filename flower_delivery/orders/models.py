@@ -6,8 +6,9 @@ import uuid
 class Order(models.Model):
     STATUS_CHOICES = [
         ('new', 'Новый'),
-        ('in_progress', 'В процессе'),
-        ('delivered', 'Доставлен'),
+        ('in_progress', 'В работе'),
+        ('in_delivery', 'В доставке'),
+        ('completed', 'Выполнен'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')

@@ -6,9 +6,11 @@ from .forms import OrderForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+import requests
+from django.conf import settings
 import json
 import logging
-
+logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,9 @@ def place_order(request, flower_id):
             order.user = request.user  # Привязываем текущего пользователя (если реализована система пользователей)
             order.save()
             order.flowers.add(flower)  # Привязываем выбранный цветок к заказу
+
+            # Вызываем функцию отправки уведомления
+            send_order_notification(order)
 
 
             return redirect('order_success')
@@ -105,4 +110,65 @@ def update_order_status(request, order_id, new_status):
     return redirect('order_detail', pk=order.id)  # Перенаправление на страницу деталей заказа
 
 
+def send_order_notification(order):
+    token = settings.TELEGRAM_BOT_TOKEN  # Токен бота из настроек
+    chat_id = settings.TELEGRAM_CHAT_ID  # Идентификатор чата из настроек
+    url = f"https://api.telegram.org/bot{token}/sendPhoto"
 
+    # Получаем данные о заказе
+    flowers = order.flowers.all()  # Получаем все цветы в заказе
+    flower_details = []
+
+    for flower in flowers:
+        flower_name = flower.name
+        price = flower.price
+        image_url = flower.image.url  # URL изображения цветка
+
+        # Формируем информацию по каждому цветку
+        flower_details.append(
+            f"{flower_name} - {price} руб."
+        )
+
+    # Объединяем информацию о всех цветах
+    flower_details_str = "\n".join(flower_details)
+
+    order_date = order.order_date.strftime('%Y-%m-%d %H:%M:%S')
+    delivery_address = order.address
+
+    # Формируем текст сообщения
+    message_text = (
+        f"Новый заказ!\n\n"
+        f"Цветы:\n{flower_details_str}\n\n"
+        f"Дата и время заказа: {order_date}\n"
+        f"Адрес доставки: {delivery_address}"
+    )
+
+    # Полный URL для изображения первого цветка (если есть)
+    if flowers.exists():
+        photo_url = f"{settings.YOUR_DOMAIN}{flowers[0].image.url}"
+    else:
+        photo_url = None
+
+    # Подготовка данных для отправки
+    data = {
+        'chat_id': chat_id,
+        'caption': message_text,
+    }
+    logging.info(f"Отправка данных в Telegram: {data}")
+
+    try:
+        # Отправляем фото, если оно есть, иначе только текст
+        if photo_url:
+            data['photo'] = photo_url
+            response = requests.post(url, data=data)
+        else:
+            text_url = f"https://api.telegram.org/bot{token}/sendMessage"
+            response = requests.post(text_url, data={'chat_id': chat_id, 'text': message_text})
+
+        response.raise_for_status()  # Проверка на ошибки HTTP
+        logging.info(f"Успешно отправлено сообщение в Telegram: {response.status_code}, {response.text}")
+
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Ошибка при отправке сообщения в Telegram: {e}")
+
+    return response.status_code

@@ -141,7 +141,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Настройка бота (Telegram API)
-TELEGRAM_BOT_TOKEN = TELEGRAM_BOT_TOKEN
+TELEGRAM_BOT_TOKEN = '7424549025:AAHAgHHj4R2arJxk5mZYAlnM5MVA9xsfKkg'
+
+TELEGRAM_CHAT_ID = '7424549025'
+
+# Настройки Django
+
+DJANGO_SERVER_URL = 'http://127.0.0.1:8000'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
